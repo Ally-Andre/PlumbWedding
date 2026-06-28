@@ -14,7 +14,7 @@ function SearchInput({onSearchSuccess,onErr,onLoading}){
         try{
             const partyData=await findaPartyByGuestName(inputName);
             if(!partyData){
-                onErr("We couldn't find that name on our guest list. Please reach out and we will fix the spelling");
+                onErr("We couldn't find that name on our guest list. Please reach out for us to resolve the isssue.");
                 onSearchSuccess(null);
             }else{
                 onSearchSuccess(partyData);
