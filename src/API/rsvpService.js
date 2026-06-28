@@ -5,7 +5,7 @@ export const findaPartyByGuestName=async (searchName)=>{
     //search guests table for a match
     const {data: matchedGuests,error: searchErr}=await supabase
         .from('guests')
-        .select('party_id')
+        .select('*')
         .ilike('first_name','%{searchName}%');
     if(searchErr){
         throw searchErr;
@@ -14,8 +14,17 @@ export const findaPartyByGuestName=async (searchName)=>{
         return null;
     }
     //take party_id from matched guest'
-    const partyID=matchedGuests[0].party_id;
-    //pull all guests linked to that party
+    const primaryGuest=matchedGuests[0];
+    //guest if singular
+    if(!primaryGuest.party_id){
+        return{
+            id:null,
+            party_name: `${primaryGuest.last_name || 'Guest'} Household`,
+            is_submitted:false,
+            guests:[primaryGuest]
+        };
+    }
+    //guest is not singular: pull all guests linked to that party
     const {data: partyData,error: partyErr}=await supabase
         .from('parties')
         .select('id,party_name,is_attending,max_guests')
