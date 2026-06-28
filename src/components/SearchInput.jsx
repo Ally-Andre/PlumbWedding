@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Search } from "lucide-react";
 import { findaPartyByGuestName } from "../API/rsvpService";
 
 function SearchInput({onSearchSuccess,onErr,onLoading}){
@@ -20,38 +21,41 @@ function SearchInput({onSearchSuccess,onErr,onLoading}){
             }
         }catch(err){
             console.error(err);
-            onError("An error occured while looking up your invitation.");
+            onErr("An error occured while looking up your invitation.");
+            onSearchSuccess(null);
         }finally{
             onLoading(false);
         }
     };
     return(
         <div style={{textAlign:'center',width:'100%'}}>
-            {/* RSVP STYLE*/}
             <h1 style={{
-                fontFamily:"'Cormorant Garmond',serif",
-                fontSize:'3rem',
+                fontFamily:"'Inspiration', cursive",
+                fontSize:'3.3rem',
                 color:'#C5A059',
-                margin:'0 0 10px 0',
-                fontWeight:'300'
+                margin:'0 0 8px 0',
+                fontWeight:'300',
+                textShadow:'0 3px 4px #2229302d'
             }}>RSVP</h1>
+            <br/>
             <p style={{
-                fontFamily:"'Noto Serif', serif",
+                fontFamily:"'Inknut Antiqua', serif",
                 fontSize:'1rem',
                 color:'#222930',
-                marginBottom:'25px',
-                lineHeight:'1.4'
-            }}>Please search your name to<br/>confirm your attendance</p>
+                margin:'0 0 8px 0',
+                lineHeight:'1.35',
+                fontWeight:'600'
+            }}>Please search your name to<br/>confirm your attendance</p><br/>
             <h3 style={{
-                fontFamily:"'Noto Serif', serif",
-                fontSize:'0.85rem',
+                fontFamily:"'Inknut Antiqua', serif",
+                fontSize:'1rem',
                 color:'#222930',
                 margin:'0 0 10px 0',
-                letterSpacing:'0.1em'
+                letterSpacing:'0.02em'
             }}>SEARCH GUEST LIST</h3>
             <form onSubmit={handleSubmit} style={{
                 position:'relative',
-                maxWidth:'340px',
+                maxWidth:'335px',
                 margin:'0 auto'
             }}>
                 <input
@@ -61,26 +65,31 @@ function SearchInput({onSearchSuccess,onErr,onLoading}){
                     placeholder="Name & Surname"
                     style={{
                         width:'100%',
-                        padding:'12px 40px 12px 20px',
-                        borderRadius:'25px',
+                        padding:'2px 4px 1px 17px',
+                        borderRadius:'22px',
                         border:'1px solid #C5A059',
                         backgroundColor:'#E8DCCA',
                         boxSizing:'border-box',
-                        fontSize:'1rem',
-                        fontFamily:"'Noto Serif', serif",
-                        color:'#222930'
+                        fontSize:'0.8rem',
+                        fontFamily:"'Inknut Antiqua', serif",
+                        color:'#222930',
+                        outline:'none'
                     }}
                 />
-                <span style={{
+                <button type="submit" style={{
                     position:'absolute',
-                    right:'20px',
+                    right:'13px',
                     top:'50%',
                     transform:'translateY(-50%)',
                     color:'#222930',
                     cursor:'pointer',
-                }}onClick={handleSubmit}>
-                🔍
-                </span>
+                    border:'none',
+                    background:'transparent',
+                    fontSize:'1rem',
+                    padding:'4px'
+                }}>
+                    <Search size={18} color="#222930"/>
+                </button>
             </form>
         </div>
     );
