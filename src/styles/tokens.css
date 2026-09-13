@@ -1,0 +1,25 @@
+:root{
+    --colour-ivory:#E8DCCA;
+    --colour-paper:#F5EFE6;
+    --colour-paper-light:#FBF8F3;
+    --colour-ink:#222930;
+    --colour-ink-soft:#4C535A;
+    --colour-gold:#C5A059;
+    --colour-gold-dark:#9C7840;
+    --colour-mist:#9EA8B5;
+    --colour-white:#FFFFFF;
+    --colour-border:rgba(197,160,89,0.32);
+    --shadow-soft:0 18px 50px rgba(34,41,48,0.08);
+    --shadow-card:0 25px 70px rgba(34,41,48,0.12);
+    --font-script:'Inspiration',cursive;
+    --font-serif:'Inknut Antiqua',serif;
+    --content-width:1160px;
+    --nav-height:78px;
+    --section-padding:120px;
+}
+@media(max-width:800px){
+    :root{
+        --nav-height:68px;
+        --section-padding:82px;
+    }
+}

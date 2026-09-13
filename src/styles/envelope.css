@@ -1,0 +1,228 @@
+.envelope-intro{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    background:
+        linear-gradient(rgba(245,239,230,0.9),rgba(232,220,202,0.92)),
+        url('../assets/plumbBackground_light.png');
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:cover;
+}
+.envelope-intro::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 50% 46%,rgba(255,255,255,0.55),transparent 34%),
+        linear-gradient(
+            90deg,
+            rgba(245,239,230,0.34),
+            transparent 20%,
+            transparent 80%,
+            rgba(245,239,230,0.34)
+        );
+}
+.envelope-table-shadow{
+    position:absolute;
+    left:50%;
+    top:68%;
+    z-index:3;
+    width:320px;
+    height:42px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:rgba(34,41,48,0.18);
+    filter:blur(28px);
+}
+.real-envelope-scene{
+    position:relative;
+    z-index:5;
+    width:min(320px,74vw);
+    aspect-ratio:390/844;
+    padding:0;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    perspective:1800px;
+    filter:
+        drop-shadow(0 12px 16px rgba(34,41,48,0.08))
+        drop-shadow(0 26px 32px rgba(34,41,48,0.15))
+        drop-shadow(0 42px 48px rgba(34,41,48,0.08));
+}
+.real-envelope-layer{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    pointer-events:none;
+}
+.real-envelope-pocket{
+    z-index:10;
+}
+.real-envelope-flap{
+    z-index:14;
+    transform-origin:50% 40.5%;
+    backface-visibility:hidden;
+}
+.real-envelope-seal{
+    position:absolute;
+    inset:0;
+    z-index:18;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transform-origin:50% 43%;
+    backface-visibility:hidden;
+    pointer-events:none;
+    filter:drop-shadow(0 3px 4px rgba(34,41,48,0.16));
+}
+.real-invitation-card{
+    position:absolute;
+    z-index:8;
+    left:12%;
+    top:24%;
+    width:76%;
+    height:46%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+    overflow:hidden;
+    border:1px solid rgba(197,160,89,0.28);
+    border-radius:8px;
+    background:
+        radial-gradient(circle at 25% 15%,rgba(255,255,255,0.75),transparent 30%),
+        linear-gradient(135deg,#FAF6EF,#EEE4D6);
+    box-shadow:
+        0 16px 36px rgba(34,41,48,0.14),
+        inset 0 0 30px rgba(255,255,255,0.5);
+}
+.real-invitation-card::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    opacity:0.08;
+    background-image:
+        radial-gradient(circle,rgba(34,41,48,0.22) 0.5px,transparent 0.7px);
+    background-size:15px 15px;
+}
+.real-invitation-inner{
+    position:relative;
+    z-index:2;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:22px 16px;
+    border:1px solid rgba(197,160,89,0.22);
+    text-align:center;
+}
+.real-invitation-small{
+    color:var(--colour-ink-soft);
+    font-size:0.5rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+}
+.real-invitation-card h1{
+    margin:14px 0 12px;
+    color:var(--colour-gold);
+    font-family:var(--font-script);
+    font-size:2.4rem;
+    font-weight:400;
+    line-height:0.9;
+}
+.real-invitation-divider{
+    width:35px;
+    height:1px;
+    margin-bottom:12px;
+    background:var(--colour-gold);
+}
+.real-invitation-date{
+    color:var(--colour-ink);
+    font-size:0.5rem;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+}
+.real-invitation-location{
+    margin-top:7px;
+    color:var(--colour-ink-soft);
+    font-size:0.45rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+}
+.envelope-intro-morphing .real-invitation-card{
+    animation:realInvitationMorph 1.3s cubic-bezier(.22,1,.36,1) forwards;
+}
+.envelope-intro-morphing .real-envelope-pocket,
+.envelope-intro-morphing .real-envelope-flap,
+.envelope-intro-morphing .real-envelope-seal{
+    animation:realEnvelopeFade 0.7s ease forwards;
+}
+.envelope-intro-morphing .envelope-table-shadow{
+    animation:shadowFade 0.6s ease forwards;
+}
+.envelope-ambient{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    overflow:hidden;
+}
+.ambient-piece{
+    position:absolute;
+    display:block;
+    pointer-events:none;
+    transform-origin:center;
+    filter:drop-shadow(0 3px 5px rgba(34,41,48,0.08));
+}
+.ambient-svg{
+    display:block;
+    width:100%;
+    height:100%;
+    overflow:visible;
+}
+.ambient-flower .ambient-svg{
+    fill:rgba(250,248,244,0.94);
+    stroke:rgba(190,178,160,0.34);
+    stroke-width:0.7;
+}
+.ambient-flower .ambient-svg circle{
+    fill:rgba(201,170,105,0.65);
+    stroke:none;
+}
+.ambient-petal .ambient-svg{
+    fill:rgba(250,248,244,0.94);
+    stroke:rgba(190,178,160,0.3);
+    stroke-width:0.8;
+}
+.ambient-leaf .ambient-svg{
+    fill:rgba(178,188,199,0.72);
+    stroke:rgba(99,111,125,0.25);
+    stroke-width:0.7;
+}
+.ambient-leaf-vein{
+    fill:none;
+    stroke:rgba(99,111,125,0.42);
+    stroke-width:0.8;
+}
+@media(max-width:900px){
+    .envelope-ambient{
+        opacity:0.78;
+    }
+}
+@media(max-width:600px){
+    .envelope-ambient{
+        display:none;
+    }
+}
