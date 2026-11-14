@@ -28,3 +28,15 @@ export async function submitWeddingRSVP(payload) {
   if (!data?.success) throw new Error('We could not confirm your RSVP. Please try again.');
   return data;
 }
+
+// A private link is a bearer credential: whoever has the link can access
+// that household's RSVP until it is submitted. Keep links confidential.
+export async function findPartyByInvitationLink(code) {
+  const invitationCode = String(code ?? '').trim().toUpperCase();
+  if (!/^[A-F0-9]{24}$/.test(invitationCode)) return null;
+  const { data, error } = await supabase.rpc('lookup_wedding_party_by_link', {
+    p_invitation_code: invitationCode,
+  });
+  if (error) throw error;
+  return data ? { ...data, invitationCode } : null;
+}
