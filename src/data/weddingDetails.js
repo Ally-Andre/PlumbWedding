@@ -22,7 +22,7 @@ export const weddingDetails={
         mapUrl:'https://www.google.com/maps/search/?api=1&query=11+Krause+Road+Witpoort+Midrand',
     },
     ceremony:{
-        address:'506 Krause Road, Witpoort, Midrand',
+        address:'506 Krause Road, Witport, Midrand',
         walkTime:'14:45',
         ceremonyTime:'15:00',
         mapUrl:'https://maps.app.goo.gl/prPv6yhA9yAwHSjY6',
