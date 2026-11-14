@@ -1,0 +1,17 @@
+/*
+.wr-braai-no-circles { display: contents; }
+  Remove named decorative circles from WeddingEve / braai without affecting
+  other page sections. The WeddingEve source wasn't supplied, so this is a
+  non-destructive best-effort override; please provide WeddingEve.jsx and
+  its stylesheet if the actual circles use different names or images.
+*/
+.wr-braai-no-circles [class*="circle"],
+.wr-braai-no-circles [class*="Circle"],
+.wr-braai-no-circles [class*="bubble"],
+.wr-braai-no-circles [class*="Bubble"],
+.wr-braai-no-circles [class*="decorative-ring"],
+.wr-braai-no-circles [class*="decorative-orb"],
+.wr-braai-no-circles [class*="floating-orb"],
+.wr-braai-no-circles [class*="ring-decoration"] {
+  display: none !important;
+}

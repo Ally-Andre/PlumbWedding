@@ -71,7 +71,6 @@ function Timeline(){
                                             rel="noreferrer"
                                         >
                                             {item.linkLabel}
-                                            <span>↗</span>
                                         </a>
                                     )}
                                 </div>

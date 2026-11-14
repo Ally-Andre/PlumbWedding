@@ -7,7 +7,6 @@ function Accommodation(){
             <div className="section-container">
                 <div className="accommodation-layout">
                     <SectionReveal className="accommodation-heading">
-                        <span className="section-eyebrow">Stay a little longer</span>
                         <h2>Accommodation</h2>
                     </SectionReveal>
                     <SectionReveal className="accommodation-card" delay={0.1}>

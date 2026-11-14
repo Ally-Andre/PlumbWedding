@@ -1,49 +1,30 @@
-import { supabase } from "../supabaseClient";
+import { supabase } from '../supabaseClient';
 
-export const findaPartyByGuestName=async(searchName)=>{
-    const cleanName=searchName.trim().toLowerCase();
-    if(!cleanName) return null;
-    const {data: guests,error: searchErr}=await supabase
-        .from('guests')
-        .select('*');
-    if(searchErr){
-        throw searchErr;
-    }
-    const searchWords=cleanName.split(/\s+/);
-    const matchedGuests=guests?.filter((guest)=>{
-        const fullName=`${guest.first_name || ''} ${guest.last_name || ''}`.toLowerCase();
-        return searchWords.every((word)=>fullName.includes(word));
-    });
-    if(!matchedGuests || matchedGuests.length===0){
-        return null;
-    }
-    const primaryGuest=matchedGuests[0];
-    if(!primaryGuest.party_id){
-        return{
-            id:null,
-            party_name:`${primaryGuest.last_name || 'Guest'} Household`,
-            is_submitted:false,
-            guests:[primaryGuest]
-        };
-    }
-    const {data: partyData,error: partyErr}=await supabase
-        .from('parties')
-        .select('id,party_name,is_submitted')
-        .eq('id',primaryGuest.party_id)
-        .single();
-    if(partyErr){
-        throw partyErr;
-    }
-    const {data: partyGuests,error: guestsErr}=await supabase
-        .from('guests')
-        .select('*')
-        .eq('party_id',primaryGuest.party_id)
-        .order('id',{ascending:true});
-    if(guestsErr){
-        throw guestsErr;
-    }
-    return{
-        ...partyData,
-        guests:partyGuests || [primaryGuest]
-    };
-};
+// Never read the entire guests table from the browser.
+// The secure database RPC returns only a party authorized by both name and code.
+export async function findaPartyByGuestName(searchName, invitationCode) {
+  const name = searchName.trim();
+  const code = invitationCode.replace(/\s/g, '').trim().toUpperCase();
+  if (!name || !code) return null;
+
+  const { data, error } = await supabase.rpc('lookup_wedding_party', {
+    p_search_name: name,
+    p_invitation_code: code,
+  });
+  if (error) throw error;
+  return data ? { ...data, invitationCode: code } : null;
+}
+
+// The server checks the code again and atomically locks the invitation.
+// Never use a service_role key or direct table updates in frontend code.
+export async function submitWeddingRSVP(payload) {
+  const { invitationCode, ...rsvpPayload } = payload;
+  if (!invitationCode) throw new Error('Please search for your invitation again.');
+  const { data, error } = await supabase.rpc('submit_wedding_rsvp', {
+    p_invitation_code: invitationCode,
+    p_payload: rsvpPayload,
+  });
+  if (error) throw new Error(error.message || 'Unable to submit your RSVP.');
+  if (!data?.success) throw new Error('We could not confirm your RSVP. Please try again.');
+  return data;
+}

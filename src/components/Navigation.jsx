@@ -1,6 +1,6 @@
 import { useEffect,useState } from 'react';
 import { motion,AnimatePresence } from 'motion/react';
-import { weddingDetails } from '../data/weddingDetails';
+import sealMark from '../assets/seal-nav.png';
 import '../styles/navigation.css';
 
 function Navigation({onRSVP}){
@@ -35,12 +35,14 @@ function Navigation({onRSVP}){
                 className="navigation-logo"
                 type="button"
                 onClick={()=>scrollToSection('home')}
+                aria-label="David and Allyson, back to top"
             >
-                {weddingDetails.couple.initials}
+                <img className="navigation-seal" src={sealMark} alt="" width="44" height="44" />
             </button>
             <nav className="navigation-links">
                 <button type="button" onClick={()=>scrollToSection('wedding-eve')}>Wedding Eve</button>
                 <button type="button" onClick={()=>scrollToSection('timeline')}>Itinerary</button>
+                <button type="button" onClick={()=>scrollToSection('dress-code')}>Dress Code</button>
                 <button type="button" onClick={()=>scrollToSection('stay')}>Stay</button>
                 <button type="button" onClick={()=>scrollToSection('registry')}>Gifts</button>
                 <button className="navigation-rsvp" type="button" onClick={onRSVP}>RSVP</button>
@@ -65,6 +67,7 @@ function Navigation({onRSVP}){
                     >
                         <button type="button" onClick={()=>scrollToSection('wedding-eve')}>Wedding Eve</button>
                         <button type="button" onClick={()=>scrollToSection('timeline')}>Itinerary</button>
+                        <button type="button" onClick={()=>scrollToSection('dress-code')}>Dress Code</button>
                         <button type="button" onClick={()=>scrollToSection('stay')}>Stay</button>
                         <button type="button" onClick={()=>scrollToSection('registry')}>Gifts</button>
                         <button className="navigation-mobile-rsvp" type="button" onClick={onRSVP}>RSVP</button>

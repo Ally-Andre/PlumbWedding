@@ -6,7 +6,6 @@ function Registry(){
         <section id="registry" className="section registry-section">
             <div className="section-container registry-container">
                 <SectionReveal>
-                    <span className="section-eyebrow">With love</span>
                     <h2>Gifts</h2>
                     <p className="registry-lead">Having you there to celebrate with us really is gift enough.</p>
                     <p>We're incredibly fortunate to already have everything we need for our home, so please don't feel any pressure to give us anything.</p>
@@ -19,7 +18,6 @@ function Registry(){
                         rel="noreferrer"
                     >
                         Buy a voucher online
-                        <span>↗</span>
                     </a>
                 </SectionReveal>
             </div>

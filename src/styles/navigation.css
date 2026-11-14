@@ -26,6 +26,22 @@
     font-family:var(--font-script);
     font-size:1.8rem;
     cursor:pointer;
+    line-height:0;
+}
+.navigation-seal{
+    display:block;
+    width:44px;
+    height:44px;
+    object-fit:contain;
+    filter:drop-shadow(0 2px 4px rgba(34,41,48,0.25));
+    transition:transform 0.35s ease;
+}
+.navigation-logo:hover .navigation-seal{
+    transform:rotate(-6deg) scale(1.06);
+}
+.navigation-scrolled .navigation-seal{
+    width:38px;
+    height:38px;
 }
 .navigation-links{
     display:flex;

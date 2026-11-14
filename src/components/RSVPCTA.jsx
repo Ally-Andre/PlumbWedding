@@ -17,7 +17,6 @@ function RSVPCTA({onRSVP}){
                         whileTap={{scale:0.98}}
                     >
                         RSVP
-                        <span>→</span>
                     </motion.button>
                 </SectionReveal>
             </div>

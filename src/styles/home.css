@@ -208,9 +208,7 @@
     overflow:hidden;
     padding-top:145px;
     padding-bottom:145px;
-    background:
-        radial-gradient(circle at 50% 45%,rgba(197,160,89,0.06),transparent 38%),
-        #222930;
+    background:#222930;
     color:var(--colour-paper);
 }
 .wedding-eve-container{
@@ -638,4 +636,198 @@
     .editorial-ampersand{
         margin:7px 0 !important;
     }
+}
+
+/* Wedding Eve: no decorative outlined circles */
+.wedding-eve-decoration,
+.wedding-eve-decoration-left,
+.wedding-eve-decoration-right { display: none !important; }
+
+/* Dress code: compact editorial layout, not cards or colour-name labels. */
+.dress-code-section {
+    scroll-margin-top: var(--nav-height);
+    padding: 116px 32px 108px;
+    background: #eee3d4;
+}
+.dress-code-layout {
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: clamp(48px, 9vw, 118px);
+    align-items: center;
+}
+.dress-code-intro .section-eyebrow {
+    margin-bottom: 14px;
+}
+.dress-code-intro h2 {
+    margin: 0;
+    color: var(--colour-gold);
+    font-family: var(--font-script);
+    font-weight: 400;
+    line-height: 1.06;
+    font-size: clamp(4.5rem, 7vw, 6.3rem);
+}
+.dress-code-formality {
+    margin: 14px 0 38px;
+    color: var(--colour-ink);
+    font-size: 0.8rem;
+    letter-spacing: 0.025em;
+}
+.dress-code-palette-caption {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--colour-gold-dark);
+    font-size: 0.61rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+.dress-code-palette {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+    width: min(100%, 360px);
+    height: 52px;
+}
+.dress-code-swatch {
+    display: block;
+    min-width: 0;
+    border: 1px solid rgba(34,41,48,0.12);
+}
+.dress-code-guidance {
+    border-left: 1px solid rgba(156,120,64,0.28);
+    padding-left: clamp(30px, 5vw, 70px);
+}
+.dress-code-guidance-item + .dress-code-guidance-item {
+    margin-top: 35px;
+}
+.dress-code-guidance-item h3 {
+    margin: 0 0 11px;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+.dress-code-guidance-item p {
+    margin: 0;
+    color: var(--colour-ink-soft);
+    font-size: 0.76rem;
+    line-height: 1.9;
+}
+
+/* The main RSVP call-to-action no longer contains an arrow. */
+.rsvp-cta-button { justify-content: center; }
+
+@media (max-width: 700px) {
+    .dress-code-section { padding: 84px 24px 80px; }
+    .dress-code-layout { grid-template-columns: 1fr; gap: 36px; }
+    .dress-code-intro h2 { font-size: clamp(4.1rem, 16vw, 5.7rem); }
+    .dress-code-formality { margin-bottom: 28px; }
+    .dress-code-palette { height: 40px; width: min(100%, 320px); }
+    .dress-code-guidance {
+        border-left: 0;
+        border-top: 1px solid rgba(156,120,64,0.28);
+        padding: 28px 0 0;
+    }
+    .dress-code-guidance-item + .dress-code-guidance-item { margin-top: 26px; }
+}
+
+/* Help browser print/PDF export preserve the site's colours. */
+@media print {
+    .home-page, .home-page * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* ------------------------------------------------------------------
+   Polish pass
+   ------------------------------------------------------------------ */
+
+/* Body copy: regular weight so it sits quietly under the script headings.
+   Labels, eyebrows and buttons keep their own bolder weights. */
+.section-heading p,
+.wedding-eve-container p,
+.timeline-content p,
+.dress-code-guidance-item p,
+.dress-code-formality,
+.accommodation-card p,
+.registry-container p,
+.rsvp-cta-container p {
+    font-weight: 400;
+}
+.accommodation-card strong { font-weight: 600; }
+
+/* Hero: gold, slightly larger ampersand with room to breathe */
+.editorial-hero-main .editorial-ampersand {
+    margin: 26px 0 18px;
+    color: var(--colour-gold);
+    font-size: 0.5em;
+}
+/* Hero: more space so the swash on the "y" clears the divider */
+.editorial-rule { margin: 66px auto 26px; }
+@media (max-width: 760px) {
+    .editorial-rule { margin-top: 58px; }
+}
+@media (max-width: 500px) {
+    .editorial-ampersand { margin: 20px 0 12px !important; }
+}
+
+/* Accommodation: bigger, tappable phone number */
+.primary-link-button {
+    transition: background 0.25s ease;
+}
+.primary-link-button:hover { background: #333c45; }
+.primary-link-button span {
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+}
+
+/* ------------------------------------------------------------------
+   Dress code refresh
+   ------------------------------------------------------------------ */
+.dress-code-section { padding: 94px 32px 88px; }
+@media (max-width: 700px) {
+    .dress-code-section { padding: 70px 24px 66px; }
+}
+
+/* Heading: nudge right so the swash on the "D" lines up with the text below */
+.dress-code-intro h2 { padding-left: 4px; }
+
+/* Formality as a feature line */
+.dress-code-formality {
+    position: relative;
+    margin: 16px 0 44px;
+    padding-bottom: 22px;
+    color: var(--colour-ink);
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+}
+.dress-code-formality::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 64px;
+    height: 1px;
+    background: var(--colour-gold);
+}
+
+/* Palette: tall arches, echoing the shape of a window or doorway */
+.dress-code-palette {
+    gap: 8px;
+    width: min(100%, 380px);
+    height: 128px;
+}
+.dress-code-swatch {
+    border-radius: 999px 999px 3px 3px;
+    box-shadow: 0 6px 14px rgba(34, 41, 48, 0.08);
+    transition: transform 0.3s ease;
+    cursor: default;
+}
+.dress-code-swatch:hover { transform: translateY(-4px); }
+@media (max-width: 700px) {
+    .dress-code-palette { height: 104px; width: min(100%, 330px); }
+    .dress-code-formality { margin-bottom: 32px; }
 }
