@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SearchInput from '../components/SearchInput';
-import { submitWeddingRSVP } from '../API/rsvpService';
+import { submitWeddingRSVP, findPartyByInvitationLink } from '../API/rsvpService';
 // Load this stylesheet even when the form is mounted separately from RSVPPage.
 import rsvpStyleText from '../styles/rsvp.css?inline';
 
@@ -116,22 +116,7 @@ function validatePerson(person, name) {
   return null;
 }
 
-function isGuestComplete(response) {
-  if (validatePerson(response, '')) return false;
-  return response.plusOnes.every(
-    (p) => p.firstName.trim() && p.lastName.trim() && !validatePerson(p, '')
-  );
-}
-
-function summarise(response) {
-  const tick = (v) => (v === 'yes' ? '✓' : '✗');
-  const parts = [`Burger ${tick(response.burgerDinner)}`, `Wedding ${tick(response.wedding)}`];
-  if (response.wedding === 'yes') parts.push(`${response.starter}, ${response.main}, ${response.dessert}`);
-  if (response.plusOnes.length) parts.push(`+1 ${response.plusOnes[0].firstName.trim()}`);
-  return parts.join(' · ');
-}
-
-function RSVPForm({ onSubmitRSVP = submitWeddingRSVP }) {
+function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
   const [party, setParty] = useState(null);
   const [responses, setResponses] = useState({});
   const [searchError, setSearchError] = useState('');
@@ -140,7 +125,8 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP }) {
   const [saving, setSaving] = useState(false);
   const [review, setReview] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [collapsed, setCollapsed] = useState({});
+  const [openingPrivateLink, setOpeningPrivateLink] = useState(false);
+  const privateLinkAttempted = useRef(false);
 
   const guests = party?.guests ?? [];
   // Only one plus-one is permitted for the entire invitation, even if
@@ -156,8 +142,33 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP }) {
     setSearchError('');
     setReview(false);
     setSaved(false);
-    setCollapsed({});
   }
+
+  // If a guest opens a private link, resolve their party automatically.
+  // The fragment (#invite=...) is not sent with the initial web request.
+  useEffect(() => {
+    if (privateLinkAttempted.current) return;
+    const code = invitationCode || new URLSearchParams(
+      window.location.hash.slice(1)
+    ).get('invite');
+    if (code === null) return;
+    privateLinkAttempted.current = true;
+
+    setOpeningPrivateLink(true);
+    findPartyByInvitationLink(code)
+      .then((foundParty) => {
+        if (foundParty) {
+          handleSearchSuccess(foundParty);
+        } else {
+          setSearchError('This private invitation link is invalid. Please contact the hosts.');
+        }
+      })
+      .catch(() => {
+        // Do not log invitation tokens or guest data to the console.
+        setSearchError('We could not open your private invitation. Please try again later.');
+      })
+      .finally(() => setOpeningPrivateLink(false));
+  }, [invitationCode]);
 
   function updateGuest(guestId, field, value) {
     const id = String(guestId);
@@ -299,14 +310,19 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP }) {
   return (
     <section className="wr-form-shell" aria-label="RSVP form">
       <style>{rsvpStyleText}</style>
-      <div className="wr-search-card">
-        <h2>Find your invitation</h2>
-        <div className="wr-search-input-wrap">
-          <SearchInput onSearchSuccess={handleSearchSuccess} onErr={setSearchError} onLoading={setSearchLoading} />
+      {!party && (
+        <div className="wr-search-card">
+          <h2>{openingPrivateLink ? 'Opening your invitation…' : 'Find your invitation'}</h2>
+          {!openingPrivateLink && (
+            <div className="wr-search-input-wrap">
+              <SearchInput onSearchSuccess={handleSearchSuccess} onErr={setSearchError} onLoading={setSearchLoading} />
+            </div>
+          )}
+          {openingPrivateLink && <p className="wr-notice" role="status">Finding your household…</p>}
+          {searchLoading && <p className="wr-notice" role="status">Searching the guest list…</p>}
+          {searchError && <p className="wr-error" role="alert">{searchError}</p>}
         </div>
-        {searchLoading && <p className="wr-notice" role="status">Searching the guest list…</p>}
-        {searchError && <p className="wr-error" role="alert">{searchError}</p>}
-      </div>
+      )}
 
       {party && guests.length === 0 && (
         <p className="wr-notice">No guests were returned for this invitation. Please try searching again.</p>
@@ -336,27 +352,6 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP }) {
             const canBringPlusOne = Number(guest.max_guests) > 0;
             const hasPlusOne = response.plusOnes.length > 0;
             const plusOneTakenElsewhere = Boolean(plusOneOwnerId && plusOneOwnerId !== key);
-            const complete = isGuestComplete(response);
-            if (collapsed[key] && complete) {
-              return (
-                <article className="wr-guest-card wr-guest-card-collapsed" key={key}>
-                  <div>
-                    <h3>{guestName}</h3>
-                    <span className="wr-guest-summary">
-                      <span className="wr-guest-done-mark" aria-hidden="true">✓</span>
-                      {summarise(response)}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className="wr-link-button"
-                    onClick={() => setCollapsed((prev) => ({ ...prev, [key]: false }))}
-                  >
-                    Edit
-                  </button>
-                </article>
-              );
-            }
             return (
               <article className="wr-guest-card" key={key}>
                 <div className="wr-guest-card-heading">
@@ -437,18 +432,6 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP }) {
                         )}
                       </div>
                     )}
-                  </div>
-                )}
-
-                {complete && (
-                  <div className="wr-done-row">
-                    <button
-                      type="button"
-                      className="wr-done-button"
-                      onClick={() => setCollapsed((prev) => ({ ...prev, [key]: true }))}
-                    >
-                      Done with {guest.first_name}
-                    </button>
                   </div>
                 )}
               </article>

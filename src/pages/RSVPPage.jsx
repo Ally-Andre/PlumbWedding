@@ -1,10 +1,8 @@
 import RSVPForm from './RSVPForm';
 import { weddingDetails } from '../data/weddingDetails';
-import sealMark from '../assets/seal-nav.png';
 import '../styles/rsvp.css';
-import '../styles/rsvp-polish.css';
 
-function RSVPPage({ navigateTo, onSubmitRSVP }) {
+function RSVPPage({ navigateTo, onSubmitRSVP, invitationCode }) {
   function goBack() {
     navigateTo('info');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -16,13 +14,7 @@ function RSVPPage({ navigateTo, onSubmitRSVP }) {
         <button type="button" className="wr-back-button" onClick={goBack}>
           Back to details
         </button>
-        <img
-          className="wr-seal"
-          src={sealMark}
-          alt={weddingDetails.couple.initials}
-          width="46"
-          height="46"
-        />
+        <span className="wr-monogram">{weddingDetails.couple.initials}</span>
       </header>
 
       <main className="wr-main">
@@ -31,7 +23,7 @@ function RSVPPage({ navigateTo, onSubmitRSVP }) {
           <p>Let us know whether you’ll be joining us for the wedding and the dinner the night before.</p>
         </section>
 
-        <RSVPForm onSubmitRSVP={onSubmitRSVP} />
+        <RSVPForm onSubmitRSVP={onSubmitRSVP} invitationCode={invitationCode} />
       </main>
       <footer className="wr-footer">WITH LOVE &amp; GRATITUDE</footer>
     </div>
