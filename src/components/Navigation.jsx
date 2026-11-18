@@ -1,6 +1,6 @@
 import { useEffect,useState } from 'react';
 import { motion,AnimatePresence } from 'motion/react';
-import sealMark from '../assets/seal-nav.png';
+import waxSeal from '../assets/EnvSeal.png';
 import '../styles/navigation.css';
 
 function Navigation({onRSVP}){
@@ -35,9 +35,9 @@ function Navigation({onRSVP}){
                 className="navigation-logo"
                 type="button"
                 onClick={()=>scrollToSection('home')}
-                aria-label="David and Allyson, back to top"
+                aria-label="Back to home"
             >
-                <img className="navigation-seal" src={sealMark} alt="" width="44" height="44" />
+                <span aria-hidden="true" style={{ display: 'inline-block', flexShrink: 0, width: 44, height: 44, backgroundImage: `url(${waxSeal})`, backgroundSize: '300% auto', backgroundPosition: '50.6% 50.7%', backgroundRepeat: 'no-repeat', verticalAlign: 'middle' }} />
             </button>
             <nav className="navigation-links">
                 <button type="button" onClick={()=>scrollToSection('wedding-eve')}>Wedding Eve</button>

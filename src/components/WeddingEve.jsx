@@ -18,9 +18,9 @@ function WeddingEve(){
                     </div>
                     <p className="wedding-eve-lead">A relaxed evening before the wedding with burgers, a braai and a little more time together.</p>
                     <div className="wedding-eve-meta">
-                        <span>The day before</span>
+                        <span>11 Krause Road</span>
                         <div></div>
-                        <span>Time TBC</span>
+                        <span>16:00</span>
                     </div>
                     <p className="wedding-eve-rsvp-copy">Please let us know on your wedding RSVP if you'll be joining us.</p>
                 </SectionReveal>

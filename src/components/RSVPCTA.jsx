@@ -8,7 +8,7 @@ function RSVPCTA({onRSVP}){
                 <SectionReveal>
                     <span className="section-eyebrow">One last thing</span>
                     <h2>Will We See You There?</h2>
-                    <p>We can't wait to celebrate with you. Let us know whether you'll be joining us for the wedding and the Wedding Eve braai.</p>
+                    <p>We can't wait to celebrate with you. Let us know whether you'll be joining us for the wedding and the Wedding Eve braai.<br /><strong>Kindly RSVP by 1 January 2027.</strong></p>
                     <motion.button
                         className="rsvp-cta-button"
                         type="button"

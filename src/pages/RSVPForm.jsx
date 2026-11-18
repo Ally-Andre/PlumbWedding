@@ -1,14 +1,51 @@
-import { useEffect, useRef, useState } from 'react';
-import SearchInput from '../components/SearchInput';
+import { useEffect, useState } from 'react';
 import { submitWeddingRSVP, findPartyByInvitationLink } from '../API/rsvpService';
 // Load this stylesheet even when the form is mounted separately from RSVPPage.
 import rsvpStyleText from '../styles/rsvp.css?inline';
 
-// The search component is unchanged; it still supplies the selected party.
-// A real Supabase save function can be passed as the onSubmitRSVP prop.
-const STARTERS = ['Butternut soup', 'Springbok'];
-const MAINS = ['Steak', 'Chicken'];
-const DESSERTS = ['Homemade ice cream', 'Chocolate pudding'];
+// Keep the original database values: Supabase validates these on submission.
+// Labels and descriptions are presentation only, including the review screen.
+const STARTERS = [
+  {
+    value: 'Butternut soup',
+    label: 'Butternut soup',
+    description: 'A smooth, velvety butternut soup with a touch of chilli.',
+  },
+  {
+    value: 'Springbok',
+    label: 'Springbok Carpaccio d’Afrique',
+    description: 'Thinly sliced springbok, shaved Parmesan, wild rocket, truffle oil and caperberries.',
+  },
+];
+const MAINS = [
+  {
+    value: 'Steak',
+    label: 'Prime Beef Fillet Rossini',
+    description: 'Matured 300 g chargrilled beef fillet, truffle butter, roasted shallots, red wine jus and crispy roast potatoes.',
+  },
+  {
+    value: 'Chicken',
+    label: 'Chicken Cordon Bleu',
+    description: 'Free-range chicken supreme, smoked ham and Gruyère purée, with seasonal vegetables.',
+  },
+];
+const DESSERTS = [
+  {
+    value: 'Homemade ice cream',
+    label: 'The 506 Homemade Ice Cream',
+    description: 'A trio of homemade ice creams, finished with warm chocolate sauce.',
+  },
+  {
+    value: 'Chocolate pudding',
+    label: 'Chocolate Silk',
+    description: 'White and milk chocolate spheres, smooth, rich and decadent.',
+  },
+];
+
+const MEAL_LABELS = Object.fromEntries(
+  [...STARTERS, ...MAINS, ...DESSERTS].map(({ value, label }) => [value, label])
+);
+const mealLabel = (value) => MEAL_LABELS[value] ?? value;
 
 const emptyResponse = () => ({
   burgerDinner: '',
@@ -62,17 +99,43 @@ function MealChoice({ label, options, value, onChange, name }) {
   return (
     <fieldset className="wr-fieldset">
       <legend className="wr-field-label">{label} <span className="wr-required"></span></legend>
-      <div className="wr-meal-options">
+      <div
+        className="wr-meal-options"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+          gap: '9px',
+        }}
+      >
         {options.map((option) => (
-          <label className="wr-choice wr-meal-choice" key={option}>
+          <label
+            className="wr-choice wr-meal-choice"
+            key={option.value}
+            style={{ alignItems: 'flex-start', minWidth: 0, textAlign: 'left' }}
+          >
             <input
               type="radio"
               name={name}
-              value={option}
-              checked={value === option}
-              onChange={() => onChange(option)}
+              value={option.value}
+              checked={value === option.value}
+              onChange={() => onChange(option.value)}
+              style={{ marginTop: '3px' }}
             />
-            <span>{option}</span>
+            <span style={{ display: 'block', minWidth: 0 }}>
+              <strong style={{ display: 'block', fontWeight: 600, lineHeight: 1.6 }}>
+                {option.label}
+              </strong>
+              <span style={{
+                display: 'block',
+                marginTop: '5px',
+                fontSize: '0.73rem',
+                lineHeight: 1.65,
+                fontWeight: 400,
+                color: '#555c62',
+              }}>
+                {option.description}
+              </span>
+            </span>
           </label>
         ))}
       </div>
@@ -89,7 +152,7 @@ function MealSection({ response, onFieldChange, groupId }) {
         <span className="wr-mini-rule" />
       </div>
       <p className="wr-help">Please choose a starter, main course and dessert.</p>
-      <div className="wr-meal-grid">
+      <div className="wr-meal-grid" style={{ gridTemplateColumns: 'minmax(0, 1fr)', gap: '0' }}>
         <MealChoice label="Starter" options={STARTERS} value={response.starter} onChange={(v) => onFieldChange('starter', v)} name={`${groupId}-starter`} />
         <MealChoice label="Main course" options={MAINS} value={response.main} onChange={(v) => onFieldChange('main', v)} name={`${groupId}-main`} />
         <MealChoice label="Dessert" options={DESSERTS} value={response.dessert} onChange={(v) => onFieldChange('dessert', v)} name={`${groupId}-dessert`} />
@@ -116,17 +179,62 @@ function validatePerson(person, name) {
   return null;
 }
 
-function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
+// Reuse the existing RSVP button styles; no global CSS changes are needed.
+function RSVPContact() {
+  return (
+    <div style={{
+      borderTop: '1px solid rgba(197, 160, 89, 0.4)',
+      margin: '26px auto 0',
+      paddingTop: '22px',
+      textAlign: 'center',
+      maxWidth: '500px',
+    }}>
+      <p style={{ margin: '0 0 14px', fontSize: '0.85rem', lineHeight: 1.8 }}>
+        If you are having difficulties, need to make changes to your RSVP or have any questions, please contact Allyson Andre.
+      </p>
+      <p style={{ margin: '0 0 18px', fontSize: '0.9rem' }}>
+        <strong>Allyson Andre</strong><br />
+        076 587 2423
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+        <a
+          className="wr-secondary-button"
+          href="tel:+27765872423"
+          style={{ flex: '1 1 165px', minWidth: 0, minHeight: '46px', margin: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', padding: '10px 12px', boxSizing: 'border-box', fontSize: '0.75rem' }}
+        >
+          Call Allyson
+        </a>
+        <a
+          className="wr-primary-button"
+          href="https://wa.me/27765872423?text=Hi%20Allyson%2C%20I%20have%20a%20question%20about%20your%20wedding%20RSVP."
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ flex: '1 1 165px', minWidth: 0, minHeight: '46px', margin: 0, padding: '10px 12px', textDecoration: 'none', boxSizing: 'border-box', fontSize: '0.75rem', letterSpacing: '0.04em', textTransform: 'none' }}
+        >
+          WhatsApp Allyson
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// A changed invitation code remounts the form, clearing any previous party.
+function RSVPForm(props) {
+  const code = typeof props.invitationCode === 'string'
+    ? props.invitationCode.trim().toUpperCase()
+    : '';
+  return <InvitationRSVPForm key={code} {...props} invitationCode={code} />;
+}
+
+function InvitationRSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
   const [party, setParty] = useState(null);
   const [responses, setResponses] = useState({});
   const [searchError, setSearchError] = useState('');
   const [formError, setFormError] = useState('');
-  const [searchLoading, setSearchLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [review, setReview] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [openingPrivateLink, setOpeningPrivateLink] = useState(false);
-  const privateLinkAttempted = useRef(false);
+  const [openingPrivateLink, setOpeningPrivateLink] = useState(() => Boolean(invitationCode));
 
   const guests = party?.guests ?? [];
   // Only one plus-one is permitted for the entire invitation, even if
@@ -135,7 +243,7 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
     (guestId) => responses[guestId]?.plusOnes?.length > 0
   );
 
-  function handleSearchSuccess(foundParty) {
+  function handleInvitationSuccess(foundParty) {
     setParty(foundParty);
     setResponses(Object.fromEntries((foundParty?.guests ?? []).map((guest) => [String(guest.id), emptyResponse()])));
     setFormError('');
@@ -144,30 +252,37 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
     setSaved(false);
   }
 
-  // If a guest opens a private link, resolve their party automatically.
-  // The fragment (#invite=...) is not sent with the initial web request.
+  // App supplies the token from the private link or the current tab's session.
+  // No token means no lookup: the guest sees the contact/help message instead.
   useEffect(() => {
-    if (privateLinkAttempted.current) return;
-    const code = invitationCode || new URLSearchParams(
-      window.location.hash.slice(1)
-    ).get('invite');
-    if (code === null) return;
-    privateLinkAttempted.current = true;
+    if (!invitationCode) return;
+    let cancelled = false;
+    if (!/^[A-F0-9]{24}$/.test(invitationCode)) {
+      setSearchError('This invitation link is invalid. Please use your original personalised link.');
+      setOpeningPrivateLink(false);
+      return;
+    }
 
     setOpeningPrivateLink(true);
-    findPartyByInvitationLink(code)
+    findPartyByInvitationLink(invitationCode)
       .then((foundParty) => {
+        if (cancelled) return;
         if (foundParty) {
-          handleSearchSuccess(foundParty);
+          handleInvitationSuccess(foundParty);
         } else {
-          setSearchError('This private invitation link is invalid. Please contact the hosts.');
+          setSearchError('This invitation link is invalid. Please use your original personalised link.');
         }
       })
       .catch(() => {
-        // Do not log invitation tokens or guest data to the console.
-        setSearchError('We could not open your private invitation. Please try again later.');
+        if (!cancelled) {
+          setSearchError('We could not open your invitation. Please try again or contact Allyson below.');
+        }
       })
-      .finally(() => setOpeningPrivateLink(false));
+      .finally(() => {
+        if (!cancelled) setOpeningPrivateLink(false);
+      });
+
+    return () => { cancelled = true; };
   }, [invitationCode]);
 
   function updateGuest(guestId, field, value) {
@@ -257,7 +372,7 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
   function validateAll() {
     for (const guest of guests) {
       const response = responses[String(guest.id)];
-      if (!response) return 'Please search for your invitation again.';
+      if (!response) return 'Please reopen your personalised invitation link.';
       const name = `${guest.first_name} ${guest.last_name}`;
       const error = validatePerson(response, name);
       if (error) return error;
@@ -312,26 +427,33 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
       <style>{rsvpStyleText}</style>
       {!party && (
         <div className="wr-search-card">
-          <h2>{openingPrivateLink ? 'Opening your invitation…' : 'Find your invitation'}</h2>
-          {!openingPrivateLink && (
-            <div className="wr-search-input-wrap">
-              <SearchInput onSearchSuccess={handleSearchSuccess} onErr={setSearchError} onLoading={setSearchLoading} />
-            </div>
+          {openingPrivateLink ? (
+            <>
+              <h2>Opening your invitation…</h2>
+              <p className="wr-notice" role="status">Finding your household…</p>
+            </>
+          ) : (
+            <>
+              {searchError && <p className="wr-error" role="alert">{searchError}</p>}
+              <h2>Please use your personalised invitation link to RSVP.</h2>
+              <RSVPContact />
+            </>
           )}
-          {openingPrivateLink && <p className="wr-notice" role="status">Finding your household…</p>}
-          {searchLoading && <p className="wr-notice" role="status">Searching the guest list…</p>}
-          {searchError && <p className="wr-error" role="alert">{searchError}</p>}
         </div>
       )}
 
-      {party && guests.length === 0 && (
-        <p className="wr-notice">No guests were returned for this invitation. Please try searching again.</p>
+      {party && guests.length === 0 && !party.is_submitted && (
+        <div className="wr-search-card">
+          <p className="wr-notice">No guests were found for this invitation.</p>
+          <RSVPContact />
+        </div>
       )}
 
       {party?.is_submitted && !saved && (
         <div className="wr-review-card wr-lock-card" role="status">
           <h2>We've received your RSVP</h2>
-          <p>This invitation has already been submitted, so responses are now locked. If you need to make a change, please contact us.</p>
+          <p>This invitation has already been submitted, so responses are now locked.</p>
+          <RSVPContact />
         </div>
       )}
 
@@ -360,7 +482,7 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
                 <AttendanceChoice
                   name={`burger-${key}`}
                   label="Build-a-Burger dinner"
-                  date="Friday, 22 January 2027"
+                  date="Friday, 22 January 2027 · 16:00"
                   value={response.burgerDinner}
                   onChange={(v) => updateGuest(key, 'burgerDinner', v)}
                 />
@@ -421,7 +543,7 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
                             <input id={`last-${key}`} type="text" autoComplete="off" className="wr-input wr-name-input" value={response.plusOnes[0].lastName} onChange={(e) => updatePlusOne(key, 0, 'lastName', e.target.value)} />
                           </div>
                         </div>
-                        <AttendanceChoice name={`plus-burger-${key}`} label="Build-a-Burger dinner" date="Friday, 22 January 2027" value={response.plusOnes[0].burgerDinner} onChange={(v) => updatePlusOne(key, 0, 'burgerDinner', v)} />
+                        <AttendanceChoice name={`plus-burger-${key}`} label="Build-a-Burger dinner" date="Friday, 22 January 2027 · 16:00" value={response.plusOnes[0].burgerDinner} onChange={(v) => updatePlusOne(key, 0, 'burgerDinner', v)} />
                         <AttendanceChoice name={`plus-wedding-${key}`} label="Wedding celebration" date="Saturday, 23 January 2027" value={response.plusOnes[0].wedding} onChange={(v) => updatePlusOne(key, 0, 'wedding', v)} />
                         {response.plusOnes[0].wedding === 'yes' && (
                           <MealSection
@@ -458,7 +580,7 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
                 <strong>{person.label}</strong>
                 <span>Burger dinner: {person.burgerDinner === 'yes' ? 'Attending' : 'Not attending'}</span>
                 <span>Wedding: {person.wedding === 'yes' ? 'Attending' : 'Not attending'}</span>
-                {person.wedding === 'yes' && <span>Menu: {person.starter} · {person.main} · {person.dessert}</span>}
+                {person.wedding === 'yes' && <span>Menu: {mealLabel(person.starter)} · {mealLabel(person.main)} · {mealLabel(person.dessert)}</span>}
               </div>
             ));
           })}
@@ -474,10 +596,14 @@ function RSVPForm({ onSubmitRSVP = submitWeddingRSVP, invitationCode }) {
           </div>
         </div>
       )}
+      {party && guests.length > 0 && !party.is_submitted && !saved && (
+        <RSVPContact />
+      )}
       {saved && (
         <div id="wr-review" className="wr-review-card wr-success" role="status">
           <h2>We have your RSVP!</h2>
           <p>Thank you for letting us know. We look forward to celebrating with you.</p>
+          <RSVPContact />
         </div>
       )}
     </section>
